@@ -8,12 +8,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginClient;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -26,42 +28,52 @@ public class MainActivity extends AppCompatActivity {
     CallbackManager callbackManager;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        FacebookSdk.sdkInitialize(getApplicationContext());
 
 
         callbackManager = CallbackManager.Factory.create();
 
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
-        if (accessToken != null && accessToken.isExpired()==false) {
+
+        if (isLoggedIn==false) {
             startActivity(new Intent(MainActivity.this, DashboardActivity.class));
             finish();
+
+            Toast.makeText(MainActivity.this, "Berhasilllllll", Toast.LENGTH_SHORT).show();
 
         }
 
 
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
 
-                startActivity(new Intent(MainActivity.this, DashboardActivity.class));
-                finish();
-            }
 
-            @Override
-            public void onError(@NonNull FacebookException e) {
 
-            }
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        startActivity(new Intent(MainActivity.this, DashboardActivity.class));
+                        finish();
+                    }
 
-            @Override
-            public void onCancel() {
+                    @Override
+                    public void onCancel() {
+                        // App code
+                    }
 
-            }
-        });
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                    }
+                });
 
 
         btnLogin    =   findViewById(R.id.btnLogin);

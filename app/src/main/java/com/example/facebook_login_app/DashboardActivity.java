@@ -36,28 +36,26 @@ public class DashboardActivity extends AppCompatActivity {
         imgProfile  =   findViewById(R.id.imgProfile);
 
 
-
-
         AccessToken accessToken  = AccessToken.getCurrentAccessToken();
-
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-
-            @Override
-            public void onCompleted( JSONObject jsonObject, GraphResponse graphResponse) {
-                try {
+        @Override
+        public void onCompleted( JSONObject jsonObject, GraphResponse graphResponse) {
 
 
-                    String fullName = jsonObject.getString("name");
-                    String url = jsonObject.getJSONObject("picture").getJSONObject("data").getString("url");
+            try {
+                String fullName = jsonObject.getString("name");
 
-                    tvUsername.setText(fullName);
-                    Picasso.get().load(url).into(imgProfile);
+                String url = jsonObject.getJSONObject("picture").getJSONObject("data").getString("url");
+
+                tvUsername.setText(fullName);
+
+                Picasso.get().load(url).into(imgProfile);
 
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+        }
     });
 
         Bundle parameters=new Bundle();
